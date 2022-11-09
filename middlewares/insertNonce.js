@@ -20,10 +20,9 @@ function insertNonce(res, req, html, index_file) {
   }
 }
 
-module.exports = (app, extraConfig) => {
+module.exports = (app, config) => {
   let html;
-  // TODO check path to index, set default?
-  let index_file = extraConfig.index_file;
+  let index_file = config.siteIndexFile;
 
   app.use("*", function (req, res, next) {
     if (req.params["0"] === "/") {
