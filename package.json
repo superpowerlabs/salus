@@ -3,6 +3,13 @@
   "version": "0.0.9",
   "description": "A set of security middleware to secure a webapp with rate limiting and CSP headers",
   "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.6.0",
+    "fs-extra": "^10.1.0",
+    "helmet": "^6.0.0",
+    "lodash": "^4.17.21"
+  },
   "scripts": {
     "test": "playwright test"
   },
