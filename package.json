@@ -1,0 +1,17 @@
+{
+  "name": "salus",
+  "version": "0.0.9",
+  "description": "A set of security middleware to secure a webapp with rate limiting and CSP headers",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "keywords": [
+    "csp",
+    "rate-limit",
+    "security",
+    "ddos"
+  ],
+  "author": "Yacin Bahi <yacin@red64.io>",
+  "license": "ISC"
+}
