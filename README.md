@@ -1,29 +1,17 @@
-# Overview
+# Salus
 
-## Installation (temporary instruction until we publish the package)
+A set of security middlewares to secure a webapp with rate limiting and CSP headers
 
-Assuming your app is in `~/worspace/myapp`.
-
-First, clone the security package repo locally:
+## Installation
 
 ```
-cd ~/workspace
-git clone https://github.com/superpowerlabs/salus
+npm i @superpowerlabs/salus
 ```
-
-Then install the package into your app:
-
-```
-cd my app
-pnpm i ../salus
-```
-
-This will update your `package.json` and install `salus` locally.
 
 ## Configuration
 
 This package is designed to work with an express app. You will need to provide the parameter that work for your web app in a `salus.config.js` file.
-You'll find a template at the root of the `salus` package `https://github.com/superpowerlabs/salus/saluas.config.js.template`.
+You'll find a template at the root of the `salus` package `https://github.com/superpowerlabs/salus/salus.config.js.template`.
 
 ```js
 const config = {
@@ -86,7 +74,7 @@ module.exports = { config };
 ```
 
 
-## Seting the app to use `salus`
+## Setting the app to use `salus`
 
 Here's an example on how to setup for an Express app:
 ```js
@@ -94,7 +82,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 // loading security related modules and configs
-const applySecurity = require("salus");
+const applySecurity = require("@superpowerlabs/salus");
 const config = require("./salus.config");
 
 process.on("uncaughtException", function (error) {
@@ -129,3 +117,9 @@ cd salus
 pnpm i
 pnpm test
 ```
+
+# Credits
+
+Author Yacin Bahi <yacin@red64.io>
+
+(c) 2022 Superpower Labs
