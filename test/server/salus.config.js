@@ -1,5 +1,5 @@
 const config = {
-  siteIndexFile: "../../build_latest/index.html",
+  siteIndexFile: "../test/public/index.html",
   contentSecurityPolicy: {
     srcDefaults: ["'self'", "*.mob.land", "*.byte.city"],
     skipCSP: ["styles", "images", "static"],
