@@ -26,16 +26,20 @@ module.exports = (app, config) => {
 
   app.use("*", function (req, res, next) {
     if (req.params["0"] === "/") {
+      // console.log("... * -> insert nonce", req.originalUrl);
       res.send(insertNonce(res, req, html, index_file));
     } else {
+      // console.log("... * -> skip nonce", req.originalUrl);
       next();
     }
   });
 
   app.use("/:anything", function (req, res, next) {
-    if (res.locals.isStaticAsset) {
+    if (res.locals.skipCSP) {
+      // console.log("... /:anything -> skip nonce", req.originalUrl);
       next();
     } else {
+      // console.log("... /:anything -> insert nonce", req.originalUrl);
       res.send(insertNonce(res, req, html, index_file));
     }
   });

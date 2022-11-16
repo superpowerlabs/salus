@@ -1,0 +1,56 @@
+const config = {
+  siteIndexFile: "../../build_latest/index.html",
+  contentSecurityPolicy: {
+    srcDefaults: ["'self'", "*.mob.land", "*.byte.city"],
+    skipCSP: ["styles", "images", "static"],
+    directives: {
+      defaultSrc: ["app.openlogin.com", "app.tor.us"],
+      connectSrc: ["*.tor.us", "*.ankr.com", "*.walletconnect.org", "wss:"],
+      fontSrc: ["fonts.gstatic.com/"],
+      imgSrc: ["www.w3.org/"],
+      scriptSrc: ["self", "use-nonce"],
+      styleSrc: ["test.byte.city/", "fonts.googleapis.com/", "app.tor.us/"],
+    },
+  },
+  crossOriginEmbedderPolicy: {
+    policy: "credentialless",
+  },
+  crossOriginOpenerPolicy: {
+    policy: "same-origin-allow-popups",
+  },
+  crossOriginResourcePolicy: {
+    policy: "cross-origin",
+  },
+  // options.allow is a boolean dictating whether to enable DNS prefetching. It defaults to false
+  dnsPrefetchControl: {
+    allow: true,
+  },
+  referrerPolicy: {
+    policy: ["origin", "unsafe-url"],
+  },
+  expectCt: {
+    maxAge: 86400,
+    enforce: true,
+    reportUri: "example.com",
+  },
+  hsts: {
+    maxAge: 123456,
+    includeSubDomains: false,
+    preload: true,
+  },
+  //options.action is a string that specifies which directive to use—either DENY or SAMEORIGIN.
+  frameguard: {
+    action: "deny",
+  },
+  // options.permittedPolicies is a string that must be "none", "master-only", "by-content-type", or "all". It defaults to "none".
+  permittedCrossDomainPolicies: {
+    permittedPolicies: "master-only",
+  },
+  rateLimiter: {
+    windowMs: 10000,
+    max: 60,
+  },
+  debug: true,
+};
+
+module.exports = { config };

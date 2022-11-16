@@ -1,0 +1,17 @@
+/* TODO: add styling */
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: black; /* #131313 */
+  color: whitesmoke;
+  font-family: Modeco, sans-serif !important;
+  background-image: url(../images/bg.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  width: 100%;
+}

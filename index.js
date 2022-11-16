@@ -1,17 +1,14 @@
 const helmet = require("helmet");
-const ipAddressMiddleware = require("./middlewares/getIPAddress");
-const limiterMiddleware = require("./middlewares/rateLimiter");
-const cspMiddleware = require("./middlewares/csp");
-const nonceMIddleware = require("./middlewares/setNonce");
-const insertNonceMiddleware = require("./middlewares/insertNonce");
-
-
+const getIPAdress = require("./middlewares/getIPAddress");
+const rateLimiter = require("./middlewares/rateLimiter");
+const csp = require("./middlewares/csp");
+const setNonce = require("./middlewares/setNonce");
+const insertNonce = require("./middlewares/insertNonce");
 
 module.exports = (app, config) => {
-  app.use(ipAddressMiddleware);
-  app.use(limiterMiddleware);
+  app.use(getIPAdress);
+  rateLimiter(app, config);
 
-  console.log(config.contentSecurityPolicy);
   let skips = config.contentSecurityPolicy.skipCSP || [];
 
   app.use("/:anything", function (req, res, next) {
@@ -22,35 +19,36 @@ module.exports = (app, config) => {
     next();
   });
 
-  app.use(nonceMIddleware);
+  app.use(setNonce);
 
   app.use((req, res, next) => {
     if (res.locals.skipCSP) {
+      // console.log("... skip CSP", req.originalUrl);
       next();
     } else {
-      cspMiddleware(config)(req, res, next);
+      // console.log("... calling CSP", req.originalUrl);
+      csp(config)(req, res, next);
     }
   });
 
+  app.use(helmet.crossOriginEmbedderPolicy(config.crossOriginEmbedderPolicy));
+  app.use(helmet.crossOriginOpenerPolicy(config.crossOriginOpenerPolicy));
+  app.use(helmet.crossOriginResourcePolicy(config.crossOriginResourcePolicy));
+  app.use(helmet.dnsPrefetchControl(config.dnsPrefetchControl));
+  app.use(helmet.expectCt(config.expectCt));
+  app.use(helmet.referrerPolicy(config.referrerPolicy));
+  app.use(helmet.hsts(config.hsts));
+  app.use(helmet.frameguard(config.frameguard));
   app.use(
-    helmet.crossOriginEmbedderPolicy(config.crossOriginEmbedderPolicy)
+    helmet.permittedCrossDomainPolicies(config.permittedCrossDomainPolicies)
   );
+  app.use(helmet.referrerPolicy(config.referrerPolicy));
 
-  app.use(
-    helmet.crossOriginOpenerPolicy(config.crossOriginOpenerPolicy)
-  );
-  app.use(helmet.crossOriginResourcePolicy());
-  app.use(helmet.dnsPrefetchControl());
-  app.use(helmet.expectCt());
-  app.use(helmet.frameguard());
-  app.use(helmet.hidePoweredBy());
-  app.use(helmet.hsts());
-  app.use(helmet.ieNoOpen());
-  app.use(helmet.noSniff());
-  app.use(helmet.originAgentCluster());
-  app.use(helmet.permittedCrossDomainPolicies());
-  app.use(helmet.referrerPolicy());
-  app.use(helmet.xssFilter());
+  app.use(helmet.originAgentCluster()); //This middleware takes no options.
+  app.use(helmet.ieNoOpen()); //This middleware takes no options.
+  app.use(helmet.noSniff()); //This middleware takes no options.
+  app.use(helmet.hidePoweredBy()); //This middleware takes no options.
+  app.use(helmet.xssFilter()); // This middleware takes no options.
 
-  insertNonceMiddleware(app, config);
+  insertNonce(app, config);
 };
