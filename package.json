@@ -1,6 +1,6 @@
 {
-  "name": "salus",
-  "version": "0.0.9",
+  "name": "@superpowerlabs/salus",
+  "version": "0.0.9-beta.1",
   "description": "A set of security middleware to secure a webapp with rate limiting and CSP headers",
   "main": "index.js",
   "dependencies": {
@@ -13,6 +13,17 @@
     "lodash": "^4.17.21",
     "path": "^0.12.7"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/superpowerlabs/salus.git"
+  },
+  "homepage": "https://github.com/superpowerlabs/salus#readme",
+  "bugs": {
+    "url": "https://github.com/superpowerlabs/salus/issues"
+  },
   "keywords": [
     "csp",
     "rate-limit",
@@ -20,7 +31,7 @@
     "ddos"
   ],
   "author": "Yacin Bahi <yacin@red64.io>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "chai": "^4.3.7",
     "mocha": "^10.1.0",
@@ -28,5 +39,8 @@
   },
   "scripts": {
     "test": "mocha --timeout 5000"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
