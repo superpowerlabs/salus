@@ -28,27 +28,26 @@ module.exports = (app, config) => {
     } else {
       // console.log("... calling CSP", req.originalUrl);
       csp(config)(req, res, next);
+      app.use(helmet.crossOriginEmbedderPolicy(config.crossOriginEmbedderPolicy));
+      app.use(helmet.crossOriginOpenerPolicy(config.crossOriginOpenerPolicy));
+      app.use(helmet.crossOriginResourcePolicy(config.crossOriginResourcePolicy));
+      app.use(helmet.dnsPrefetchControl(config.dnsPrefetchControl));
+      app.use(helmet.expectCt(config.expectCt));
+      app.use(helmet.referrerPolicy(config.referrerPolicy));
+      app.use(helmet.hsts(config.hsts));
+      app.use(helmet.frameguard(config.frameguard));
+      app.use(
+          helmet.permittedCrossDomainPolicies(config.permittedCrossDomainPolicies)
+      );
+      app.use(helmet.referrerPolicy(config.referrerPolicy));
+
+      app.use(helmet.originAgentCluster()); //This middleware takes no options.
+      app.use(helmet.ieNoOpen()); //This middleware takes no options.
+      app.use(helmet.noSniff()); //This middleware takes no options.
+      app.use(helmet.hidePoweredBy()); //This middleware takes no options.
+      app.use(helmet.xssFilter()); // This middleware takes no options.
     }
   });
-
-  app.use(helmet.crossOriginEmbedderPolicy(config.crossOriginEmbedderPolicy));
-  app.use(helmet.crossOriginOpenerPolicy(config.crossOriginOpenerPolicy));
-  app.use(helmet.crossOriginResourcePolicy(config.crossOriginResourcePolicy));
-  app.use(helmet.dnsPrefetchControl(config.dnsPrefetchControl));
-  app.use(helmet.expectCt(config.expectCt));
-  app.use(helmet.referrerPolicy(config.referrerPolicy));
-  app.use(helmet.hsts(config.hsts));
-  app.use(helmet.frameguard(config.frameguard));
-  app.use(
-    helmet.permittedCrossDomainPolicies(config.permittedCrossDomainPolicies)
-  );
-  app.use(helmet.referrerPolicy(config.referrerPolicy));
-
-  app.use(helmet.originAgentCluster()); //This middleware takes no options.
-  app.use(helmet.ieNoOpen()); //This middleware takes no options.
-  app.use(helmet.noSniff()); //This middleware takes no options.
-  app.use(helmet.hidePoweredBy()); //This middleware takes no options.
-  app.use(helmet.xssFilter()); // This middleware takes no options.
 
   insertNonce(app, config);
 };
