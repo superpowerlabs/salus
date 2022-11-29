@@ -10,9 +10,25 @@ let srcPolicies = [
   "styleSrc",
 ];
 
+function getSrcDefaults(config) {
+  let defaults = [];
+  if (typeof config.contentSecurityPolicy !== 'undefined') {
+    defaults = config.contentSecurityPolicy.srcDefaults || [];
+  }
+  return defaults;
+};
+
+function getDirectives(config) {
+  let directives = {};
+  if (typeof config.contentSecurityPolicy !== 'undefined') {
+    directives = config.contentSecurityPolicy.directives || {};
+  }
+  return directives;
+};
+
 function generateDirectives(config, nonce) {
-  let defaults = config.contentSecurityPolicy.srcDefaults;
-  let directives = config.contentSecurityPolicy.directives;
+  let defaults = getSrcDefaults(config);
+  let directives = getDirectives(config);
   let fullDirectives = {};
   let defaultConf = {};
 
@@ -34,9 +50,9 @@ function generateDirectives(config, nonce) {
 
 module.exports = (config) => (req, res, next) => {
   const directives = generateDirectives(config, res.locals.nonce);
-  // console.log("... calling CSP", req.originalUrl);
-  csp({
+  config.contentSecurityPolicy = {
     useDefaults: true,
     directives,
-  })(req, res, next);
+  };
+  next();
 };

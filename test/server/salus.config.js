@@ -47,8 +47,8 @@ const config = {
     permittedPolicies: "master-only",
   },
   rateLimiter: {
-    windowMs: 10000,
-    max: 20,
+    windowMs: 10000, // 10 seconds
+    max: 11, // Limit each IP to 10 requests per `window` (here, per 10 seconds)
   },
   debug: true,
 };
