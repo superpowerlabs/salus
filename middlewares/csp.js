@@ -1,4 +1,3 @@
-const csp = require("helmet-csp");
 const _ = require("lodash");
 
 let srcPolicies = [
