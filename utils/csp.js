@@ -7,20 +7,24 @@ let srcPolicies = [
   "fontSrc",
   "imgSrc",
   "styleSrc",
+  "frameSrc",
+  "childSrc",
 ];
 
 function getSrcDefaults(config) {
   let defaults = [];
-  if (typeof config.contentSecurityPolicy !== 'undefined') {
-    defaults = config.contentSecurityPolicy.srcDefaults || [];
+  if (typeof config.contentSecurityPolicy === 'object' 
+      && config.contentSecurityPolicy.hasOwnProperty('srcDefaults')) { 
+    defaults = config.contentSecurityPolicy.srcDefaults ;
   }
   return defaults;
 };
 
 function getDirectives(config) {
   let directives = {};
-  if (typeof config.contentSecurityPolicy !== 'undefined') {
-    directives = config.contentSecurityPolicy.directives || {};
+  if (typeof config.contentSecurityPolicy === 'object' 
+      && config.contentSecurityPolicy.hasOwnProperty('directives')) { 
+    directives = config.contentSecurityPolicy.directives;
   }
   return directives;
 };
@@ -47,11 +51,12 @@ function generateDirectives(config, nonce) {
   return fullDirectives;
 }
 
-module.exports = (config) => (req, res, next) => {
-  const directives = generateDirectives(config, res.locals.nonce);
-  config.contentSecurityPolicy = {
+module.exports = (config, nonce) => {
+  let new_config = _.clone(config);
+  const directives = generateDirectives(new_config, nonce);
+  new_config.contentSecurityPolicy = {
     useDefaults: true,
     directives,
   };
-  next();
+  return new_config;
 };

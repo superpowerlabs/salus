@@ -1,3 +1,5 @@
+// we use this server to start the test app and run Apache Bench (ab) against it
+// 
 const app = require("./server/app");
 const port = 3000
 

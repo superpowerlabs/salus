@@ -146,12 +146,12 @@ Transfer rate:          1263.66 [Kbytes/sec] received
 ```
 ab -n200 -c100 "http://localhost:3000/"
 ...cut
-Total transferred:      93580 bytes
-HTML transferred:       16570 bytes
-Requests per second:    1780.72 [#/sec] (mean)
-Time per request:       56.157 [ms] (mean)
-Time per request:       0.562 [ms] (mean, across all concurrent requests)
-Transfer rate:          813.67 [Kbytes/sec] received
+Total transferred:      90986 bytes
+HTML transferred:       17387 bytes
+Requests per second:    1862.35 [#/sec] (mean)
+Time per request:       53.696 [ms] (mean)
+Time per request:       0.537 [ms] (mean, across all concurrent requests)
+Transfer rate:          827.38 [Kbytes/sec] received
 ...cut
 ```
 
@@ -171,6 +171,11 @@ Transfer rate:          684.21 [Kbytes/sec] received
 ...cut
 ```
 
+# Read more
+If you want to learn more about securing a web app:
+- https://content-security-policy.com/
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+ 
 # Credits
 
 Author Yacin Bahi <yacin@red64.io>

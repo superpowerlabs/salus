@@ -1,15 +1,16 @@
 const helmet = require("helmet");
 const debug = require('debug')('salus');
+const crypto = require("crypto");
+const csp = require("./utils/csp");
 const getIPAdress = require("./middlewares/getIPAddress");
 const rateLimiter = require("./middlewares/rateLimiter");
-const csp = require("./middlewares/csp");
-const setNonce = require("./middlewares/setNonce");
 const insertNonce = require("./middlewares/insertNonce");
 
 function skipAssets(config) {
   let skips = [];
-  if (typeof config.contentSecurityPolicy !== 'undefined') {
-    skips = config.contentSecurityPolicy.skipCSP || [];
+  if (typeof config.contentSecurityPolicy === 'object' 
+      && config.contentSecurityPolicy.hasOwnProperty('skipCSP')) { 
+    skips = config.contentSecurityPolicy.skipCSP;
   }
   return skips;
 }
@@ -24,23 +25,24 @@ module.exports = (app, config) => {
     let p = req.params.anything;
     if (skips.includes(p)) {
       res.locals.skipCSP = true;
-      debug("/:anything skipping CSP for ->", p);
+      debug("/:anything route: adding req to skips ->", p);
     }
-    debug("/:anything keeping CSP for ->", p);
     next();
   });
 
-  app.use(setNonce);
-  app.use(csp(config));
-
   app.use((req, res, next) => {
+    let full_config;
     if (res.locals.skipCSP) {
       debug("asset detected: skipping security policies", req.originalUrl);
       next();
     } else {
       debug("non asset detected: triggering security policies", req.originalUrl);
-      helmet(config)(req, res, next);
+      res.locals.nonce = crypto.randomBytes(16).toString("hex");
+      full_config = csp(config, res.locals.nonce);
+      helmet(full_config)(req, res, next);
     }
   });
+
+  // TODO skip nonce insertion if asset?
   insertNonce(app, config);
 };

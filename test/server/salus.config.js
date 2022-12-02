@@ -1,15 +1,16 @@
 const config = {
   siteIndexFile: "../test/public/index.html",
   contentSecurityPolicy: {
-    srcDefaults: ["'self'", "*.mob.land", "*.byte.city"],
+    srcDefaults: ["'self'", "example1.com"],
     skipCSP: ["styles", "images", "static"],
     directives: {
-      defaultSrc: ["app.openlogin.com", "app.tor.us"],
-      connectSrc: ["*.tor.us", "*.ankr.com", "*.walletconnect.org", "wss:"],
-      fontSrc: ["fonts.gstatic.com/"],
-      imgSrc: ["www.w3.org/"],
+      defaultSrc: ["example2.com"],
+      connectSrc: ["example3.com"],
+      fontSrc: ["fonts.gstatic.com"],
+      imgSrc: ["www.w3.org"],
       scriptSrc: ["self", "use-nonce"],
-      styleSrc: ["test.byte.city/", "fonts.googleapis.com/", "app.tor.us/"],
+      styleSrc: ["example4.com"],
+      frameSrc:["example5.com"],
     },
   },
   crossOriginEmbedderPolicy: {

@@ -18,16 +18,6 @@ describe("Security features", function () {
     request(app).get("/").expect("X-RateLimit-Limit", "11").expect(200, done);
   });
 
-  it("should insert content security policies headers", function (done) {
-    request(app)
-      .get("/")
-      .expect("Content-Security-Policy", /nonce/)
-      .expect("Content-Security-Policy", /use-nonce/)
-      .expect("Content-Security-Policy", /mob.land/)
-      .expect("Content-Security-Policy", /upgrade-insecure-requests/)
-      .expect(200, done);
-  });
-
   it("should insert X-Permitted-Cross-Domain-Policies headers", function (done) {
     request(app)
       .get("/")
