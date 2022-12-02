@@ -1,53 +1,48 @@
 const helmet = require("helmet");
+const debug = require('debug')('salus');
+const crypto = require("crypto");
+const csp = require("./utils/csp");
 const getIPAdress = require("./middlewares/getIPAddress");
 const rateLimiter = require("./middlewares/rateLimiter");
-const csp = require("./middlewares/csp");
-const setNonce = require("./middlewares/setNonce");
 const insertNonce = require("./middlewares/insertNonce");
+
+function skipAssets(config) {
+  let skips = [];
+  if (typeof config.contentSecurityPolicy === 'object' 
+      && config.contentSecurityPolicy.hasOwnProperty('skipCSP')) { 
+    skips = config.contentSecurityPolicy.skipCSP;
+  }
+  return skips;
+}
 
 module.exports = (app, config) => {
   app.use(getIPAdress);
   rateLimiter(app, config);
 
-  let skips = config.contentSecurityPolicy.skipCSP || [];
+  let skips = skipAssets(config);
 
   app.use("/:anything", function (req, res, next) {
     let p = req.params.anything;
     if (skips.includes(p)) {
       res.locals.skipCSP = true;
+      debug("/:anything route: adding req to skips ->", p);
     }
     next();
   });
 
-  app.use(setNonce);
-
   app.use((req, res, next) => {
+    let full_config;
     if (res.locals.skipCSP) {
-      // console.log("... skip CSP", req.originalUrl);
+      debug("asset detected: skipping security policies", req.originalUrl);
       next();
     } else {
-      // console.log("... calling CSP", req.originalUrl);
-      csp(config)(req, res, next);
-      app.use(helmet.crossOriginEmbedderPolicy(config.crossOriginEmbedderPolicy));
-      app.use(helmet.crossOriginOpenerPolicy(config.crossOriginOpenerPolicy));
-      app.use(helmet.crossOriginResourcePolicy(config.crossOriginResourcePolicy));
-      app.use(helmet.dnsPrefetchControl(config.dnsPrefetchControl));
-      app.use(helmet.expectCt(config.expectCt));
-      app.use(helmet.referrerPolicy(config.referrerPolicy));
-      app.use(helmet.hsts(config.hsts));
-      app.use(helmet.frameguard(config.frameguard));
-      app.use(
-          helmet.permittedCrossDomainPolicies(config.permittedCrossDomainPolicies)
-      );
-      app.use(helmet.referrerPolicy(config.referrerPolicy));
-
-      app.use(helmet.originAgentCluster()); //This middleware takes no options.
-      app.use(helmet.ieNoOpen()); //This middleware takes no options.
-      app.use(helmet.noSniff()); //This middleware takes no options.
-      app.use(helmet.hidePoweredBy()); //This middleware takes no options.
-      app.use(helmet.xssFilter()); // This middleware takes no options.
+      debug("non asset detected: triggering security policies", req.originalUrl);
+      res.locals.nonce = crypto.randomBytes(16).toString("hex");
+      full_config = csp(config, res.locals.nonce);
+      helmet(full_config)(req, res, next);
     }
   });
 
+  // TODO skip nonce insertion if asset?
   insertNonce(app, config);
 };

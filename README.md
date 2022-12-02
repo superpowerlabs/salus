@@ -118,6 +118,64 @@ pnpm i
 pnpm test
 ```
 
+# Performance
+
+In this section, we're using the app in the `test` folder to test the performance impact of running salus.
+
+## Setup
+
+Start the app in `test`.
+```
+cd test
+node index.js.hide
+```
+We're using Apache Bench (`ab` is included with MacOs, you'll have to install it on Windows and Linux).
+## Baseline: App without Salus
+```
+ab -n200 -c100 "http://localhost:3000/"
+...cut
+Total transferred:      109980 bytes
+HTML transferred:       16570 bytes
+Requests per second:    2353.13 [#/sec] (mean)
+Time per request:       42.496 [ms] (mean)
+Time per request:       0.425 [ms] (mean, across all concurrent requests)
+Transfer rate:          1263.66 [Kbytes/sec] received
+...cut
+```
+## With Salus skipping assets
+```
+ab -n200 -c100 "http://localhost:3000/"
+...cut
+Total transferred:      90986 bytes
+HTML transferred:       17387 bytes
+Requests per second:    1862.35 [#/sec] (mean)
+Time per request:       53.696 [ms] (mean)
+Time per request:       0.537 [ms] (mean, across all concurrent requests)
+Transfer rate:          827.38 [Kbytes/sec] received
+...cut
+```
+
+## With Salus not skipping assets
+
+Telling `salus` to skip routes where static assets are served slightly improves performance. 
+If we comment out the following line in `salus.config.js` we take all the asset routes through all the security middlewares and create a small performance hits.
+```
+ab -n200 -c100 "http://localhost:3000/"
+...cut
+Total transferred:      93580 bytes
+HTML transferred:       16570 bytes
+Requests per second:    1497.39 [#/sec] (mean)
+Time per request:       66.783 [ms] (mean)
+Time per request:       0.668 [ms] (mean, across all concurrent requests)
+Transfer rate:          684.21 [Kbytes/sec] received
+...cut
+```
+
+# Read more
+If you want to learn more about securing a web app:
+- https://content-security-policy.com/
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+ 
 # Credits
 
 Author Yacin Bahi <yacin@red64.io>

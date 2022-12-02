@@ -1,0 +1,8 @@
+// we use this server to start the test app and run Apache Bench (ab) against it
+// 
+const app = require("./server/app");
+const port = 3000
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})

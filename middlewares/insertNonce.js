@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const path = require("path");
+const debug = require('debug')('salus');
 
 function getIndex(html, index_file) {
   if (!html) {
@@ -11,6 +12,7 @@ function getIndex(html, index_file) {
 function insertNonce(res, req, html, index_file) {
   html = getIndex(html, index_file);
   if (/Firefox/.test(req.get("user-agent"))) {
+    debug('Firefox detected: skipping nonce insertion')
     return html;
   } else {
     return html
@@ -24,22 +26,29 @@ module.exports = (app, config) => {
   let html;
   let index_file = config.siteIndexFile;
 
+  if (index_file === 'undefined' || typeof index_file !== 'string') {
+    console.log("Salus: skipping nonce bc index file in salus.config.js not set")
+    return;
+  }
+
   app.use("*", function (req, res, next) {
+    debug("inserNonce Middleware testing /*");
     if (req.params["0"] === "/") {
-      // console.log("... * -> insert nonce", req.originalUrl);
+      debug("... * -> insert nonce", req.originalUrl);
       res.send(insertNonce(res, req, html, index_file));
     } else {
-      // console.log("... * -> skip nonce", req.originalUrl);
+      debug("... * -> skip nonce", req.originalUrl);
       next();
     }
   });
 
   app.use("/:anything", function (req, res, next) {
+    debug("inserNonce Middleware testing /:anything");
     if (res.locals.skipCSP) {
-      // console.log("... /:anything -> skip nonce", req.originalUrl);
+      debug("... /:anything -> skip nonce", req.originalUrl);
       next();
     } else {
-      // console.log("... /:anything -> insert nonce", req.originalUrl);
+      debug("... /:anything -> insert nonce", req.originalUrl);
       res.send(insertNonce(res, req, html, index_file));
     }
   });
