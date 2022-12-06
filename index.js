@@ -19,6 +19,10 @@ module.exports = (app, config) => {
   app.use(getIPAdress);
   rateLimiter(app, config);
 
+  if (config.disableHelmet) {
+    return;  
+  }
+
   let skips = skipAssets(config);
 
   app.use("/:anything", function (req, res, next) {
