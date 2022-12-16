@@ -14,13 +14,13 @@ function insertNonce(res, req, html, index_file) {
   if (/Firefox/.test(req.get("user-agent"))) {
     debug('Firefox detected: skipping nonce insertion')
     return html;
-  } else if (res.disableHelmet) {
-    return html;
-  } else {
+  } else if (res.locals.nonce) {
     return html
       .replace(/<script/g, `<script nonce="${res.locals.nonce}"`)
       .replace(/<link/g, `<link nonce="${res.locals.nonce}"`)
       .replace(/<style/g, `<style nonce="${res.locals.nonce}"`);
+  } else {
+    return html;
   }
 }
 

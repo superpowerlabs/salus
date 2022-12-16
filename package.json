@@ -1,6 +1,6 @@
 {
   "name": "@superpowerlabs/salus",
-  "version": "0.0.9-beta.4",
+  "version": "0.0.9-beta.5",
   "description": "A set of security middleware to secure a webapp with rate limiting and CSP headers",
   "main": "index.js",
   "dependencies": {
