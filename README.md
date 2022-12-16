@@ -178,7 +178,7 @@ If you want to learn more about securing a web app:
 
 # History
 
-**0.0.9-beta.3**
+**0.0.9-beta.4**
 - fix issue with config.disableHelmet blocking all not-static assets from loading
  
 # Credits
