@@ -175,6 +175,11 @@ Transfer rate:          684.21 [Kbytes/sec] received
 If you want to learn more about securing a web app:
 - https://content-security-policy.com/
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+
+# History
+
+**0.0.9-beta.3**
+- fix issue with config.disableHelmet blocking all not-static assets from loading
  
 # Credits
 

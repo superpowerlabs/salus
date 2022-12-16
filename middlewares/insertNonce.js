@@ -14,6 +14,8 @@ function insertNonce(res, req, html, index_file) {
   if (/Firefox/.test(req.get("user-agent"))) {
     debug('Firefox detected: skipping nonce insertion')
     return html;
+  } else if (res.disableHelmet) {
+    return html;
   } else {
     return html
       .replace(/<script/g, `<script nonce="${res.locals.nonce}"`)
