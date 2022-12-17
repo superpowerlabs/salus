@@ -1,4 +1,4 @@
-const _ = require("lodash");
+const { clone } = require("lodash");
 
 let srcPolicies = [
   "defaultSrc",
@@ -11,34 +11,34 @@ let srcPolicies = [
   "childSrc",
 ];
 
-function generateDirectives(config, nonce) {
-  const {srcDefaults: defaults, helmetConfig} = config;
-  const directives = ((helmetConfig || {}).contentSecurityPolicy || {}).directives || {};
-  let fullDirectives = {};
-  let defaultConf = {};
-
+function generateDirectives(new_config, nonce) {
+  const { srcDefaults, helmetConfig } = new_config;
+  const defaults = srcDefaults;
+  const directives =
+    ((helmetConfig || {}).contentSecurityPolicy || {}).directives || {};
+  const fullDirectives = {};
+  const defaultConf = {};
   for (let policy of srcPolicies) {
     defaultConf[policy] = defaults;
   }
   for (let key of Object.keys(defaultConf)) {
-    fullDirectives[key] = _.clone(defaults);
+    fullDirectives[key] = clone(defaults);
     for (let val of directives[key] || []) {
       fullDirectives[key].push(val);
     }
   }
   if (nonce) {
-    fullDirectives.scriptSrc.push(`'nonce-${nonce}'`);
-    fullDirectives.styleSrc.push(`'nonce-${nonce}'`);
+    (fullDirectives.scriptSrc || []).push(`'nonce-${nonce}'`);
+    (fullDirectives.styleSrc || []).push(`'nonce-${nonce}'`);
   }
   return fullDirectives;
 }
 
 module.exports = (config, nonce) => {
-  let new_config = _.clone(config);
-  const directives = generateDirectives(new_config, nonce);
-  new_config.helmetConfig.contentSecurityPolicy = {
+  const { helmetConfig = {} } = config;
+  helmetConfig.contentSecurityPolicy = {
     useDefaults: true,
-    directives,
+    directives: generateDirectives(config, nonce),
   };
-  return new_config;
+  return config.helmetConfig;
 };

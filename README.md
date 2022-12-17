@@ -72,19 +72,18 @@ const config = {
 };
 
 module.exports = { config };
-
 ```
-
 
 ## Setting the app to use `salus`
 
 Here's an example on how to setup for an Express app:
+
 ```js
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
 // loading security related modules and configs
-const {applyAll} = require("@superpowerlabs/salus");
+const { applyAll } = require("@superpowerlabs/salus");
 const config = require("./salus.config");
 
 const app = express();
@@ -100,6 +99,7 @@ module.exports = app;
 # Development
 
 To run the tests (we recommend you install pnpm):
+
 ```sh
 git clone https://github.com/superpowerlabs/salus
 cd salus
@@ -114,12 +114,16 @@ In this section, we're using the app in the `test` folder to test the performanc
 ## Setup
 
 Start the app in `test`.
+
 ```
 cd test
 node index.js.hide
 ```
+
 We're using Apache Bench (`ab` is included with MacOs, you'll have to install it on Windows and Linux).
+
 ## Baseline: App without Salus
+
 ```
 ab -n200 -c100 "http://localhost:3000/"
 ...cut
@@ -131,7 +135,9 @@ Time per request:       0.425 [ms] (mean, across all concurrent requests)
 Transfer rate:          1263.66 [Kbytes/sec] received
 ...cut
 ```
+
 ## With Salus skipping assets
+
 ```
 ab -n200 -c100 "http://localhost:3000/"
 ...cut
@@ -146,8 +152,9 @@ Transfer rate:          827.38 [Kbytes/sec] received
 
 ## With Salus not skipping assets
 
-Telling `salus` to skip routes where static assets are served slightly improves performance. 
+Telling `salus` to skip routes where static assets are served slightly improves performance.
 If we comment out the following line in `salus.config.js` we take all the asset routes through all the security middlewares and create a small performance hits.
+
 ```
 ab -n200 -c100 "http://localhost:3000/"
 ...cut
@@ -161,19 +168,38 @@ Transfer rate:          684.21 [Kbytes/sec] received
 ```
 
 # Read more
+
 If you want to learn more about securing a web app:
+
 - https://content-security-policy.com/
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+
+# Contribute
+
+Clone this repo. It uses [PnPm](https://pnpm.io/). If you didn't have it globally, please install it:
+
+```
+npm i -g pnpm
+```
+
+Then
+
+```
+pnpm i
+pnpm run prepare
+```
 
 # History
 
 **0.1.0-beta.0**
+
 - made Salus a class with 3 static methods: `applyRateLimiter`, `applyCSP` and `applyAll`
 - add config.noRateLimiter to explicitly skip the limiter
 
 **0.0.9-beta.5**
+
 - fix issue with config.disableHelmet blocking all not-static assets from loading
- 
+
 # Credits
 
 Author Yacin Bahi <yacin@red64.io>

@@ -1,0 +1,5 @@
+*.lock
+pnpm-lock.yaml
+/coverage
+/flattened
+*.json
