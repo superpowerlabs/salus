@@ -2,22 +2,17 @@ const rateLimiter = require("express-rate-limit");
 const debug = require('debug')('salus');
 
 module.exports = (app, config) => {
-  if (config["rateLimiter"]) {
-    const windowMs = config["rateLimiter"]["windowsMs"] || 10000;
-    const max = config["rateLimiter"]["max"] || 60
+  if (config.rateLimiter) {
+    const {windowMs = 10000, max = 10} = config.rateLimiter;
     app.use(
-      rateLimiter({
-        windowMs: windowMs,
-        max: max,
-        keyGenerator: (req) => {
-          const ip =
-            req.headers["x-real-ip"] ||
-            req.headers["x-forwarded-for"] ||
-            req.connection.remoteAddress;
-          debug("rate limiting source [%s] with %s request in %s ms", ip, max, windowMs);
-          return ip;
-        },
-      })
+        rateLimiter({
+          windowMs,
+          max,
+          keyGenerator: (req) => {
+            debug("rate limiting source [%s] with %s request in %s ms", req.ip, max, windowMs);
+            return req.ip;
+          },
+        })
     );
   }
 };

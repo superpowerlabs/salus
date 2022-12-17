@@ -9,8 +9,9 @@ describe("Rate limiting", function () {
     const ping_app = express();
     const config = {
       rateLimiter: {
-        windowMs: 10000, // 10 seconds
-        max: 10, // Limit each IP to 10 requests per `window` (here, per 10 seconds)
+        // defaults
+        // windowMs: 10000, // 10 seconds
+        // max: 10, // Limit each IP to 10 requests per `window` (here, per 10 seconds)
       },
     };
 
@@ -21,12 +22,10 @@ describe("Rate limiting", function () {
 
     it("should returns 429 if rate limit reached", async function () {
       let response;
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 11; i++) {
         response = await request(ping_app).get("/ping");
-        expect(response.status).eq(200);
+        expect(response.status).eq(i < 10 ? 200 : 429);
       }
-      response = await request(ping_app).get("/ping");
-      expect(response.status).eq(429);
     });
   });
 
@@ -58,7 +57,6 @@ describe("Rate limiting", function () {
   describe("applyAll and skip limiter", function () {
     const ping_app = express();
     const config = {
-      noRateLimiter: true,
     };
 
     applyAll(ping_app, config);

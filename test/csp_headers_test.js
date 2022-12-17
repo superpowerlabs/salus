@@ -1,6 +1,6 @@
 const request = require("supertest");
 const expect = require("chai").expect;
-const getApp = require("./server/app");
+const app = require("./server/app");
 
 describe('Content Security Policies', function() {
 

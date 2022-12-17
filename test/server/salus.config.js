@@ -1,9 +1,9 @@
 const config = {
   siteIndexFile: "../test/public/index.html",
   staticFolders: ["styles", "images", "static"],
-  headers: {
+  srcDefaults: ["'self'", "example1.com"],
+  helmetConfig: {
     contentSecurityPolicy: {
-      srcDefaults: ["'self'", "example1.com"],
       directives: {
         defaultSrc: ["example2.com"],
         connectSrc: ["example3.com"],
