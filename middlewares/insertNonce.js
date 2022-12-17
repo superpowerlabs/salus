@@ -1,6 +1,6 @@
 const fs = require("fs-extra");
 const path = require("path");
-const debug = require('debug')('salus');
+const debug = require("debug")("salus");
 
 function getIndex(html, index_file) {
   if (!html) {
@@ -12,7 +12,7 @@ function getIndex(html, index_file) {
 function insertNonce(res, req, html, index_file) {
   html = getIndex(html, index_file);
   if (/Firefox/.test(req.get("user-agent"))) {
-    debug('Firefox detected: skipping nonce insertion')
+    debug("Firefox detected: skipping nonce insertion");
     return html;
   } else if (res.locals.nonce) {
     return html
@@ -28,8 +28,10 @@ module.exports = (app, config) => {
   let html;
   let index_file = config.siteIndexFile;
 
-  if (index_file === 'undefined' || typeof index_file !== 'string') {
-    console.log("Salus: skipping nonce bc index file in salus.config.js not set")
+  if (index_file === "undefined" || typeof index_file !== "string") {
+    console.log(
+      "Salus: skipping nonce bc index file in salus.config.js not set"
+    );
     return;
   }
 

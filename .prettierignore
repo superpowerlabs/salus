@@ -1,5 +1,3 @@
-*.lock
 pnpm-lock.yaml
 /coverage
-/flattened
-*.json
+.nyc_output

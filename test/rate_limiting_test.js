@@ -1,10 +1,9 @@
 const request = require("supertest");
 const expect = require("chai").expect;
-const express = require('express');
-const {applyAll, applyRateLimiter} = require("../index.js");
+const express = require("express");
+const { applyAll, applyRateLimiter } = require("../index.js");
 
 describe("Rate limiting", function () {
-
   describe("applyAll", function () {
     const ping_app = express();
     const config = {
@@ -56,8 +55,7 @@ describe("Rate limiting", function () {
 
   describe("applyAll and skip limiter", function () {
     const ping_app = express();
-    const config = {
-    };
+    const config = {};
 
     applyAll(ping_app, config);
     ping_app.use("/ping", function (req, res) {
@@ -88,18 +86,20 @@ describe("Rate limiting", function () {
     });
 
     it("should insert rate limiting factors headers", function (done) {
-      request(app).get("/ping").expect("X-RateLimit-Limit", "10").expect(200, done);
+      request(app)
+        .get("/ping")
+        .expect("X-RateLimit-Limit", "10")
+        .expect(200, done);
     });
 
     it("should not insert helmet headers", async function () {
       let response;
       response = await request(app).get("/ping");
       let headers = response.headers;
-      expect(headers['content-security-policy']).eq(undefined);
-      expect(headers['cross-origin-embedder-policy']).eq(undefined);
-      expect(headers['x-dns-prefetch-control']).eq(undefined);
-      expect(headers['x-frame-options']).eq(undefined);
+      expect(headers["content-security-policy"]).eq(undefined);
+      expect(headers["cross-origin-embedder-policy"]).eq(undefined);
+      expect(headers["x-dns-prefetch-control"]).eq(undefined);
+      expect(headers["x-frame-options"]).eq(undefined);
     });
   });
 });
-
