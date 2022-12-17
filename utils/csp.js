@@ -13,18 +13,20 @@ let srcPolicies = [
 
 function getSrcDefaults(config) {
   let defaults = [];
-  if (typeof config.contentSecurityPolicy === 'object' 
-      && config.contentSecurityPolicy.hasOwnProperty('srcDefaults')) { 
-    defaults = config.contentSecurityPolicy.srcDefaults ;
+  const {headers} = config;
+  if (typeof headers.contentSecurityPolicy === 'object'
+      && headers.contentSecurityPolicy.hasOwnProperty('srcDefaults')) {
+    defaults = headers.contentSecurityPolicy.srcDefaults ;
   }
   return defaults;
 };
 
 function getDirectives(config) {
   let directives = {};
-  if (typeof config.contentSecurityPolicy === 'object' 
-      && config.contentSecurityPolicy.hasOwnProperty('directives')) { 
-    directives = config.contentSecurityPolicy.directives;
+  const {headers} = config;
+  if (typeof headers.contentSecurityPolicy === 'object'
+      && headers.contentSecurityPolicy.hasOwnProperty('directives')) {
+    directives = headers.contentSecurityPolicy.directives;
   }
   return directives;
 };
@@ -54,7 +56,7 @@ function generateDirectives(config, nonce) {
 module.exports = (config, nonce) => {
   let new_config = _.clone(config);
   const directives = generateDirectives(new_config, nonce);
-  new_config.contentSecurityPolicy = {
+  new_config.headers.contentSecurityPolicy = {
     useDefaults: true,
     directives,
   };

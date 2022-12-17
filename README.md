@@ -10,7 +10,9 @@ npm i @superpowerlabs/salus
 
 ## Configuration
 
-This package is designed to work with an express app. You will need to provide the parameter that work for your web app in a `salus.config.js` file.
+This package is designed to work with an express app that has a single index.html entrance for the website, and static routes for images, styles, etc.
+
+You will need to provide the parameter that work for your web app in a `salus.config.js` file.
 You'll find a template at the root of the `salus` package `https://github.com/superpowerlabs/salus/salus.config.js.template`.
 
 ```js
@@ -82,26 +84,13 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 // loading security related modules and configs
-const applySecurity = require("@superpowerlabs/salus");
+const {applyAll} = require("@superpowerlabs/salus");
 const config = require("./salus.config");
-
-process.on("uncaughtException", function (error) {
-  console.log(error.message);
-  console.log(error.stack);
-});
 
 const app = express();
 
 // loading security and rate limiting
-applySecurity(app, config.config);
-
-app.use("/index.html", function (req, res) {
-  res.redirect("/");
-});
-
-app.use("/ping", function (req, res) {
-  res.send("ok");
-});
+applyAll(app, config.config);
 
 app.use(express.static(path.resolve(__dirname, "../public")));
 
@@ -177,6 +166,10 @@ If you want to learn more about securing a web app:
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
 
 # History
+
+**0.1.0-beta.0**
+- made Salus a class with 3 static methods: `applyRateLimiter`, `applyCSP` and `applyAll`
+- add config.noRateLimiter to explicitly skip the limiter
 
 **0.0.9-beta.5**
 - fix issue with config.disableHelmet blocking all not-static assets from loading

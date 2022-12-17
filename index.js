@@ -1,6 +1,6 @@
 const helmet = require("helmet");
 const debug = require('debug')('salus');
-const crypto = require("crypto");
+const {randomBytes} = require("crypto");
 const csp = require("./utils/csp");
 const getIPAddress = require("./middlewares/getIPAddress");
 const rateLimiter = require("./middlewares/rateLimiter");
@@ -15,32 +15,48 @@ function skipAssets(config) {
   return skips;
 }
 
-module.exports = (app, config) => {
-  app.use(getIPAddress);
-  rateLimiter(app, config);
+const Salus = {
 
-  let skips = skipAssets(config);
+  applyAll(app, config) {
+    Salus.applyRateLimiter(app, config);
+    Salus.applyCSP(app, config);
+  },
 
-  app.use("/:anything", function (req, res, next) {
-    let p = req.params.anything;
-    if (skips.includes(p)) {
-      res.locals.skipCSP = true;
-      debug("/:anything route: adding req to skips ->", p);
+  applyRateLimiter(app, config) {
+    if (!config.noRateLimiter) {
+      app.use(getIPAddress);
+      rateLimiter(app, config);
     }
-    next();
-  });
+  },
 
-  app.use((req, res, next) => {
-    let full_config;
+  applyCSP(app, config) {
+
+    let skips = skipAssets(config);
+
+    app.use("/:anything", function (req, res, next) {
+      let p = req.params.anything;
+      if (skips.includes(p)) {
+        res.locals.skipCSP = true;
+        debug("/:anything route: adding req to skips ->", p);
+      }
+      next();
+    });
+
+    app.use((req, res, next) => {
       debug("non asset detected: triggering security policies", req.originalUrl);
       if (config.disableHelmet) {
         next();
       } else {
-        res.locals.nonce = crypto.randomBytes(16).toString("hex");
-        full_config = csp(config, res.locals.nonce);
-        helmet(full_config)(req, res, next);
+        res.locals.nonce = randomBytes(16).toString("hex");
+        const helmetConfig = csp(config, res.locals.nonce);
+        console.log(999);
+        console.log(helmetConfig)
+        helmet(helmetConfig)(req, res, next);
       }
-  });
+    });
 
-  insertNonce(app, config);
-};
+    insertNonce(app, config);
+  }
+}
+
+module.exports = Salus;

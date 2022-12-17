@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 // security related modules and configs
-const applySecurity = require("../../index.js");
+const {applyAll} = require("../../index.js");
 const config = require("./salus.config");
 
 process.on("uncaughtException", function (error) {
@@ -12,7 +12,7 @@ process.on("uncaughtException", function (error) {
 
 const app = express();
 
-applySecurity(app, config.config);
+applyAll(app, config.config);
 
 app.use("/index.html", function (req, res) {
   res.redirect("/");
