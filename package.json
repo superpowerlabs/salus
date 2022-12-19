@@ -1,6 +1,6 @@
 {
   "name": "@superpowerlabs/salus",
-  "version": "0.0.9-beta.5",
+  "version": "0.1.0-beta.0",
   "description": "A set of security middleware to secure a webapp with rate limiting and CSP headers",
   "main": "index.js",
   "dependencies": {
@@ -34,13 +34,24 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^4.3.7",
+    "cross-env": "^7.0.3",
+    "husky": "^8.0.0",
     "mocha": "^10.1.0",
+    "nyc": "^15.1.0",
+    "prettier": "^2.8.1",
+    "pretty-quick": "^3.1.3",
     "supertest": "^6.3.1"
   },
   "scripts": {
-    "test": "mocha --timeout 5000"
+    "prepare": "./prepare.sh && husky install",
+    "test": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha --timeout 5000 --exit",
+    "posttest": "nyc check-coverage --statements 90 --branches 80 --functions 100 --lines 90",
+    "lint": "npx prettier --write ."
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }
