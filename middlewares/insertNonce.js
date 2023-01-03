@@ -11,10 +11,7 @@ function getIndex(html, index_file) {
 
 function insertNonce(res, req, html, index_file) {
   html = getIndex(html, index_file);
-  if (/Firefox/.test(req.get("user-agent"))) {
-    debug("Firefox detected: skipping nonce insertion");
-    return html;
-  } else if (res.locals.nonce) {
+  if (res.locals.nonce) {
     return html
       .replace(/<script/g, `<script nonce="${res.locals.nonce}"`)
       .replace(/<link/g, `<link nonce="${res.locals.nonce}"`)
