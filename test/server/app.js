@@ -22,6 +22,10 @@ app.use("/ping", function (req, res) {
   res.send("ok");
 });
 
+app.get("/privacy", function (req, res) {
+  res.sendFile(__dirname + "/privacy.html");
+});
+
 app.use(express.static(path.resolve(__dirname, "../public")));
 
 module.exports = app;

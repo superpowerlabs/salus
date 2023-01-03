@@ -11,14 +11,12 @@ function getIndex(html, index_file) {
 
 function insertNonce(res, req, html, index_file) {
   html = getIndex(html, index_file);
-  if (res.locals.nonce) {
-    return html
-      .replace(/<script/g, `<script nonce="${res.locals.nonce}"`)
-      .replace(/<link/g, `<link nonce="${res.locals.nonce}"`)
-      .replace(/<style/g, `<style nonce="${res.locals.nonce}"`);
-  } else {
-    return html;
-  }
+  // note: removing the test if (res.locals.nonce) since this function can't be
+  //       reached if res.locals.nonce is not set
+  return html
+    .replace(/<script/g, `<script nonce="${res.locals.nonce}"`)
+    .replace(/<link/g, `<link nonce="${res.locals.nonce}"`)
+    .replace(/<style/g, `<style nonce="${res.locals.nonce}"`);
 }
 
 module.exports = (app, config) => {
