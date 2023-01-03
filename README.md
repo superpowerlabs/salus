@@ -96,6 +96,16 @@ app.use(express.static(path.resolve(__dirname, "../public")));
 module.exports = app;
 ```
 
+## Support nonce for JSS
+
+Some javascript libraries like [JSS](https://cssinjs.org/csp?v=v10.8.2#setting-up-content-security-policy-with-jss) inject content on the fly that triggers a CSP violation.
+Fortunately JSS provides a way to inject your nonce on the fly.
+Salus supports this JSS advanced behavior automaticaly if you insert the following meta tag in the head section of your Html:
+
+```html
+<meta property="csp-nonce" />
+```
+
 # Development
 
 To run the tests (we recommend you install pnpm):
