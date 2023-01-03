@@ -201,6 +201,10 @@ pnpm run prepare
 
 # History
 
+**0.1.0-beta.1**
+
+- add support for JSS nonce through meta tag
+
 **0.1.0-beta.0**
 
 - made Salus a class with 3 static methods: `applyRateLimiter`, `applyCSP` and `applyAll`
@@ -209,6 +213,14 @@ pnpm run prepare
 **0.0.9-beta.5**
 
 - fix issue with config.disableHelmet blocking all not-static assets from loading
+
+# To publish a new version
+
+- update history section of README
+- increment version: `npm version 0.1.0-beta.1`
+- test npm publish: `npm publish --dry-run`
+- check that everything looks ok in the output of the dryrun
+- publish the new version: `npm publish`
 
 # Credits
 
