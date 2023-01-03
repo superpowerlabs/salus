@@ -16,7 +16,11 @@ function insertNonce(res, req, html, index_file) {
   return html
     .replace(/<script/g, `<script nonce="${res.locals.nonce}"`)
     .replace(/<link/g, `<link nonce="${res.locals.nonce}"`)
-    .replace(/<style/g, `<style nonce="${res.locals.nonce}"`);
+    .replace(/<style/g, `<style nonce="${res.locals.nonce}"`)
+    .replace(
+      /<meta property="csp-nonce"/g,
+      `<meta property="csp-nonce" content="${res.locals.nonce}"`
+    );
 }
 
 module.exports = (app, config) => {
