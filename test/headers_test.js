@@ -7,15 +7,22 @@ describe("Security features", function () {
     request(app).get("/").expect("Content-Type", /html/).expect(200, done);
   });
 
-  it("should insert nonce in link and script tags in html response body", async function () {
+  it("should insert nonce in link and script tags in html response body for /", async function () {
     const response = await request(app).get("/");
 
     expect(response.text).match(/link nonce=/);
     expect(response.text).match(/script nonce=/);
   });
 
+  it("should insert nonce in link and script tags in html response body for /privacy", async function () {
+    const response = await request(app).get("/privacy");
+
+    expect(response.text).match(/link nonce=/);
+    expect(response.text).match(/script nonce=/);
+  });
+
   it("should insert rate limiting factors headers", function (done) {
-    request(app).get("/").expect("X-RateLimit-Limit", "11").expect(200, done);
+    request(app).get("/").expect("X-RateLimit-Limit", "12").expect(200, done);
   });
 
   it("should insert X-Permitted-Cross-Domain-Policies headers", function (done) {
