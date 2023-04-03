@@ -5,7 +5,6 @@ const app = require("./server/app");
 describe("Content Security Policies", function () {
   it("should insert headers", async function () {
     const response = await request(app).get("/");
-    //console.log(response.headers);
     const csp_headers = response.headers["content-security-policy"];
 
     expect(csp_headers).includes(

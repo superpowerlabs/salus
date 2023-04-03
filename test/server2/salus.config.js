@@ -1,5 +1,6 @@
 const config = {
   siteIndexFile: "../test/public/index.html",
+  indexRoute: "/app",
   srcDefaults: ["'self'", "example1.com"],
   helmetConfig: {
     contentSecurityPolicy: {
