@@ -24,7 +24,6 @@ const Salus = {
   },
 
   applyAll(app, config) {
-    console.log(3333, config);
     Salus.applyRateLimiter(app, config);
     Salus.applyCSP(app, config);
   },
