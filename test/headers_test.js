@@ -9,15 +9,6 @@ describe("Security features", function () {
 
   it("should insert nonce in link and script tags in html response body for /", async function () {
     const response = await request(app).get("/");
-
-    expect(response.text).match(/link nonce=/);
-    expect(response.text).match(/script nonce=/);
-    expect(response.text).match(/property="csp-nonce" content=/);
-  });
-
-  it("should insert nonce in link and script tags in html response body for /privacy", async function () {
-    const response = await request(app).get("/privacy");
-
     expect(response.text).match(/link nonce=/);
     expect(response.text).match(/script nonce=/);
     expect(response.text).match(/property="csp-nonce" content=/);

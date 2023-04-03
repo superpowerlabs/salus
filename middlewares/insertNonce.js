@@ -25,34 +25,22 @@ function insertNonce(res, req, html, index_file) {
 
 module.exports = (app, config) => {
   let html;
-  let index_file = config.siteIndexFile;
+  let indexFile = config.siteIndexFile;
 
-  if (index_file === "undefined" || typeof index_file !== "string") {
-    console.log(
-      "Salus: skipping nonce bc index file in salus.config.js not set"
-    );
-    return;
+  if (!indexFile) {
+    debug("Salus: skipping nonce bc index file in salus.config.js not set");
+    return false;
   }
 
   app.use("*", function (req, res, next) {
-    debug("inserNonce Middleware testing /*");
-    if (req.params["0"] === "/") {
-      debug("... * -> insert nonce", req.originalUrl);
-      res.send(insertNonce(res, req, html, index_file));
+    debug("... * -> insert nonce", req.originalUrl);
+    if (
+      !res.locals.config.disableHelmet &&
+      req.params[0] === (res.locals.config.indexRoute || "/")
+    ) {
+      res.send(insertNonce(res, req, html, indexFile));
     } else {
-      debug("... * -> skip nonce", req.originalUrl);
       next();
-    }
-  });
-
-  app.use("/:anything", function (req, res, next) {
-    debug("inserNonce Middleware testing /:anything");
-    if (res.locals.skipCSP) {
-      debug("... /:anything -> skip nonce", req.originalUrl);
-      next();
-    } else {
-      debug("... /:anything -> insert nonce", req.originalUrl);
-      res.send(insertNonce(res, req, html, index_file));
     }
   });
 };

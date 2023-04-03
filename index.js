@@ -1,3 +1,4 @@
+const path = require("path");
 const helmet = require("helmet");
 const debug = require("debug")("salus");
 const { randomBytes } = require("crypto");
@@ -8,10 +9,10 @@ const rateLimiter = require("./middlewares/rateLimiter");
 const insertNonce = require("./middlewares/insertNonce");
 
 const Salus = {
-  spreadConfig(app, config) {
+  spreadConfig(app, config = {}) {
     app.use(function (req, res, next) {
-      if (!res.locals.config) {
-        res.locals.config = clone(config);
+      if (!res.locals.config || Object.keys(res.locals.config).length === 0) {
+        res.locals.config = JSON.parse(JSON.stringify(config));
       }
       next();
     });
@@ -23,6 +24,7 @@ const Salus = {
   },
 
   applyAll(app, config) {
+    console.log(3333, config);
     Salus.applyRateLimiter(app, config);
     Salus.applyCSP(app, config);
   },
@@ -35,35 +37,23 @@ const Salus = {
   applyCSP(app, config) {
     Salus.spreadConfig(app, config);
 
-    function checkAnything(anything, res, next) {
-      if ((res.locals.config.staticFolders || []).includes(anything)) {
-        res.locals.skipCSP = true;
-        debug("/:anything route: adding req to skips ->", anything);
-      }
-      next();
-    }
-
-    app.use("/:anything", function (req, res, next) {
-      const { anything } = req.params;
-      checkAnything(anything, res, next);
-    });
-
-    app.use("/:group/:anything", function (req, res, next) {
-      let { group, anything } = req.params;
-      checkAnything(`${group}/${anything}`, res, next);
-    });
-
-    app.use((req, res, next) => {
+    app.use("*", (req, res, next) => {
       debug(
         "non asset detected: triggering security policies",
         req.originalUrl
       );
-      if (res.locals.config.disableHelmet || res.locals.skipCSP) {
+      if (res.locals.config.disableHelmet) {
         next();
       } else {
-        res.locals.nonce = randomBytes(16).toString("hex");
-        const helmetConfig = csp(res.locals.config, res.locals.nonce);
-        helmet(helmetConfig)(req, res, next);
+        // we apply it only to index.html because all other routes are
+        // served by React
+        if (req.params[0] === (res.locals.config.indexRoute || "/")) {
+          res.locals.nonce = randomBytes(16).toString("hex");
+          const helmetConfig = csp(res.locals.config, res.locals.nonce);
+          helmet(helmetConfig)(req, res, next);
+        } else {
+          next();
+        }
       }
     });
 
