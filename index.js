@@ -34,13 +34,23 @@ const Salus = {
 
   applyCSP(app, config) {
     Salus.spreadConfig(app, config);
-    app.use("/:anything", function (req, res, next) {
-      let p = req.params.anything;
-      if ((res.locals.config.staticFolders || []).includes(p)) {
+
+    function checkAnything(anything, res, next) {
+      if ((res.locals.config.staticFolders || []).includes(anything)) {
         res.locals.skipCSP = true;
-        debug("/:anything route: adding req to skips ->", p);
+        debug("/:anything route: adding req to skips ->", anything);
       }
       next();
+    }
+
+    app.use("/:anything", function (req, res, next) {
+      const { anything } = req.params;
+      checkAnything(anything, res, next);
+    });
+
+    app.use("/:group/:anything", function (req, res, next) {
+      let { group, anything } = req.params;
+      checkAnything(`${group}/${anything}`, res, next);
     });
 
     app.use((req, res, next) => {
